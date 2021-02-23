@@ -1,14 +1,11 @@
-import React, { Component } from "react";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-class Note extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return <div></div>;
-  }
+export default function Note(props){
+    return(
+        <div className="Note">
+            <h2><Link to={`/note/${props.id}`}>{props.name}</Link></h2>
+            <p>{props.modified}</p>
+        </div>
+    )
 }
-
-export default Note;
