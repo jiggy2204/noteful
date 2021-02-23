@@ -1,7 +1,17 @@
-import React from "react";
+import React, { Component } from "react";
+import Folder from "./Folder";
+import Main from "./Main";
 
-function App() {
-  return <main className="App">{/* content goes here */}</main>;
+import Store from "./dummy-store";
+
+class App extends Component {
+  render() {
+    return (
+      <div>
+        <Main />
+      </div>
+    );
+  }
 }
 
 export default App;
