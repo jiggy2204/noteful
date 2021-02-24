@@ -1,62 +1,62 @@
 import React, { Component } from "react";
-import { Route, Link } from "react-router-dom";
+import { Route, Link, NavLink } from "react-router-dom";
 
-import NoteListPage from "./NoteListPage";
-import NotePage from "./NotePage";
+import NotesMainNav from "./NotesMainNav";
+import NotePath from "./NotePath";
 
-import FolderListPage from "./FolderListPage";
-import FolderPage from "./FolderPage";
+import FolderSideNav from "./FolderSideNav";
+import FolderLink from "./FolderLink";
 
 import NOTES from "./dummy-store";
 
+const notes = [],
+  folders = [];
+
 export default class App extends Component {
   state = {
-    folders: NOTES.folders,
-    notes: NOTES.notes,
+    notes,
+    folders,
   };
 
-  handleNoteRetrieval(noteId) {}
+  componentDidMount() {
+    this.setState({
+      notes: NOTES.notes,
+      folders: NOTES.folders,
+    });
+  }
 
-  handleFolderRetrieval(folderId) {}
+  handleNoteChange(noteId) {}
 
   render() {
     const { folders, notes } = this.state;
 
     return (
       <div className="mainPage">
-        <Route
-          path="/"
-          render={(routeProps) => (
-            <FolderPage folders={folders} notes={notes} other={routeProps} />
-          )}
-        />
-        <header>
+        <header className="headerNav">
           <Link to="/">NOTEFUL</Link>
         </header>
-        <main>
-          <Route
-            exact
-            path="/"
-            render={(routeProps) => {
-              const { folderId } = routeProps.match.params;
-              const notesFolder = { notes, folderId };
-              return <NoteListPage notes={notesFolder} />;
-            }}
-          />
-          <Route
-            path="/note/:noteId"
-            render={(routeProps) => {
-              const { noteId } = routeProps.match.params;
-              <NotePage note={note} />;
-            }}
-          />
-          <Route
-            path="/folder/:folderId"
-            render={(routeProps) => {
-              const { folderId } = routeProps.match.params;
-            }}
-          />
-        </main>
+        <Route
+          path="/folder/:folderId"
+          render={(routeProps) => {
+            return (
+              <FolderLink folders={folders} notes={notes} {...routeProps} />
+            );
+          }}
+        />
+        <Route
+          exact
+          path="/"
+          render={() => <FolderSideNav folders={folders} />}
+        />
+        <Route exact path="/" render={() => <NotesMainNav notes={notes} />} />
+        <Route
+          path="/note/:id"
+          render={(renderProps) => {
+            return (
+              <NotePath folders={folders} notes={notes} {...renderProps} />
+            );
+          }}
+        />
       </div>
     );
   }
