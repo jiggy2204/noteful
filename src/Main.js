@@ -1,20 +1,17 @@
-import React, { Component } from "react";
-import { Route, Link } from "react-router-dom";
+import React from "react";
+import { Route } from "react-router-dom";
 
+import ListNotes from "./ListNotes";
+import NotePopup from './NotePopup';
 
-export default class Main extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      notes: this.props.note,
-    };
-  }
-  render() {
-    const { notes } = this.state;
-    return (
-      <div className="mainApp">
-
-      </div>
-    );
-  }
+export default function Main(props) {
+  return (
+    <section className="Main">
+      <Route exact path="/">
+        <ListNotes />
+      </Route>
+      <Route path='/notes/:noteid' component={NotePopup} />
+      <Route path="/folder/:folderid" component={ListNotes} />
+    </section>
+  );
 }

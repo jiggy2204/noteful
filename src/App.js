@@ -1,62 +1,94 @@
 import React, { Component } from "react";
-import { Route, Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import NotesMainNav from "./NotesMainNav";
-import NotePath from "./NotePath";
+import DataContext from "./DataContext";
 
-import FolderSideNav from "./FolderSideNav";
-import FolderLink from "./FolderLink";
+import Main from "./Main";
+import Nav from "./Nav";
 
-import NOTES from "./dummy-store";
-
-const notes = [],
-  folders = [];
+const apiKey = "i7fE6z5Fhz0mSuxyRM6UHGTesdZlgXwSqkphPxHV";
+let foldersURL =
+  "https://noteful-api-2e72e-default-rtdb.firebaseio.com/folders.json";
+let notesURL =
+  "https://noteful-api-2e72e-default-rtdb.firebaseio.com/notes.json";
 
 export default class App extends Component {
+  static contextType = DataContext;
+
   state = {
-    notes,
-    folders,
+    folders: [],
+    notes: [],
+    error: null,
   };
 
   componentDidMount() {
-    this.setState({
-      notes: NOTES.notes,
-      folders: NOTES.folders,
-    });
+    fetch(foldersURL, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        Authorization: apiKey,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error(res.statusText);
+      })
+      .then((folderJson) => {
+        this.setState({
+          folders: folderJson,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          error: err.message,
+        });
+      });
+
+    fetch(notesURL, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        Authorization: apiKey,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error(res.statusText);
+      })
+      .then((notesJson) => {
+        this.setState({
+          notes: notesJson,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          error: err.message,
+        });
+      });
   }
 
-  handleNoteChange(noteId) {}
-
   render() {
-    const { folders, notes } = this.state;
-
+    const contextValue = {
+      notes: this.state.notes,
+      folders: this.state.folders,
+    };
     return (
       <div className="mainPage">
-        <header className="headerNav">
-          <Link to="/">NOTEFUL</Link>
+        <header>
+          <Link to="/">
+            <h1>NOTEFUL</h1>
+          </Link>
         </header>
-        <Route
-          path="/folder/:folderId"
-          render={(routeProps) => {
-            return (
-              <FolderLink folders={folders} notes={notes} {...routeProps} />
-            );
-          }}
-        />
-        <Route
-          exact
-          path="/"
-          render={() => <FolderSideNav folders={folders} />}
-        />
-        <Route exact path="/" render={() => <NotesMainNav notes={notes} />} />
-        <Route
-          path="/note/:id"
-          render={(renderProps) => {
-            return (
-              <NotePath folders={folders} notes={notes} {...renderProps} />
-            );
-          }}
-        />
+        <main>
+          <DataContext.Provider value={contextValue}>
+            <Nav />
+            <Main />
+          </DataContext.Provider>
+        </main>
       </div>
     );
   }
