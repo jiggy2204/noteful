@@ -5,12 +5,10 @@ import DataContext from "./DataContext";
 
 import Main from "./Main";
 import Nav from "./Nav";
+import NoteError from "./NoteError";
 
-const apiKey = "i7fE6z5Fhz0mSuxyRM6UHGTesdZlgXwSqkphPxHV";
-let foldersURL =
-  "https://noteful-api-2e72e-default-rtdb.firebaseio.com/folders.json";
-let notesURL =
-  "https://noteful-api-2e72e-default-rtdb.firebaseio.com/notes.json";
+let foldersURL = "http://localhost:9090/folders";
+let notesURL = "http://localhost:9090/notes";
 
 export default class App extends Component {
   static contextType = DataContext;
@@ -26,7 +24,6 @@ export default class App extends Component {
       method: "GET",
       headers: {
         "content-type": "application/json",
-        Authorization: apiKey,
       },
     })
       .then((res) => {
@@ -50,7 +47,6 @@ export default class App extends Component {
       method: "GET",
       headers: {
         "content-type": "application/json",
-        Authorization: apiKey,
       },
     })
       .then((res) => {
@@ -85,8 +81,10 @@ export default class App extends Component {
         </header>
         <main>
           <DataContext.Provider value={contextValue}>
-            <Nav />
-            <Main />
+            <NoteError>
+              <Nav />
+              <Main />
+            </NoteError>
           </DataContext.Provider>
         </main>
       </div>

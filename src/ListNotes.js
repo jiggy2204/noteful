@@ -14,12 +14,12 @@ export default class ListNotes extends Component {
   };
 
   render() {
-    const { notes } = this.context;
+    const { folders, notes } = this.context;
     const { folderid } = this.props.match.params;
 
-    const folderNotes = !folderid
+    const folderNotes = !folders.id
       ? notes
-      : notes.filter((note) => note.folderid === parseInt(folderid));
+      : notes.filter((note) => note.folderId === parseInt(folderid));
 
     const listNotes = folderNotes.map((note) => (
       <Note key={note.id} noteInfo={note} />
